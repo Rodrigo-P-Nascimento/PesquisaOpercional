@@ -1,3 +1,4 @@
+from mip import Model, xsum, BINARY, MAXIMIZE
 
 
 class Solver():
@@ -9,6 +10,7 @@ class Solver():
     num_variaveis = 0
     num_restricoes = 0
     coef_func_obj = []
+    x = []
     restricoes = dict()
 
     def le_instancia(self, arquivo):
@@ -48,7 +50,7 @@ class Solver():
         for i in range(1, self.num_restricoes+1):#Vamos pegar os valores das N linhas relacionadas as restrinções
             linhas = arquivo.readline()
             ResValores = linhas.split()  
-            restrincoes[f"Restrincoes{i}"] = [int(val) for val in ResValores]
+            restrincoes[i] = [int(val) for val in ResValores]
 
         self.coef_func_obj = valFunObj
         self.restricoes = restrincoes
@@ -59,12 +61,31 @@ class Solver():
 
         arquivo.close() #fechamos o arquivo
 
+    def cria_modelo(self):
+        model = Model(sense=MAXIMIZE, solver_name="CBC")
+
+        self.x = [model.add_var(var_type=BINARY, name=f'x_{i}') for i in range(self.num_variaveis)]
+
+        model.objective = xsum([self.coef_func_obj[i]*self.x[i] for i in range(self.num_variaveis)])
+
+        for restr in range(self.num_restricoes):
+            sum_expr = xsum([self.restricoes[restr+1][i]*self.x[i] for i in range(self.num_variaveis)])
+
+            model += sum_expr <= self.restricoes[restr+1][self.num_variaveis]
+
+        return model
+    
     def resolver(self):
-        print("Bem vindo, vamos começar lendo os dados de entrada!")
-        nome_do_arquivo = input("Informe o nome do arquivo da instancia: ")
+        print("Bem-vindo! Vamos começar lendo os dados de entrada.")
+        nome_do_arquivo = input("Informe o nome do arquivo da instância: ")
 
         self.le_instancia(nome_do_arquivo)
 
-        
+        # Cria o modelo de otimização nos padrões pedidos pelo projeto
+        model = self.cria_modelo()
 
+        # Salva o modelo em um arquivo LP e mostra o conteúdo
+        model.write("model.lp")  # Salva o modelo em um arquivo
+        with open("model.lp", "r") as f:  # Lê e exibe o conteúdo do arquivo
+            print(f.read())
     
