@@ -75,6 +75,9 @@ class Solver():
 
         return model
     
+    def branch_and_bound(self, model):
+        pass
+    
     def resolver(self):
         print("Bem-vindo! Vamos começar lendo os dados de entrada.")
         nome_do_arquivo = input("Informe o nome do arquivo da instância: ")
