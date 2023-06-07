@@ -18,7 +18,7 @@ class Solver():
         try:
             # Tentamos abrir o arquivo para leitura
             fileOpened = True
-            arquivo = open(arquivo, 'r')
+            arquivo = open("entradas/"+arquivo, 'r')
 
         #Tratamento de erros de leitura do arquivo 'entrada.txt'
         except FileNotFoundError:
