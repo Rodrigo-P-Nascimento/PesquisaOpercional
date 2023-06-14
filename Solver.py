@@ -121,7 +121,6 @@ class Solver():
                     modelo_filho1 = modelo_atual.copy()
                     modelo_filho1.add_constr(modelo_atual.vars[index_var_escolhida] == 1)
                     fila.append(modelo_filho1)
-                    print('QUALQUER COISA')
                 else:
                     # Atualiza a melhor solução se necessário
                     if valor_obj_atual > melhor_valor_obj:
